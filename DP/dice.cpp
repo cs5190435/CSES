@@ -24,27 +24,29 @@ const int inf=1e18;
 
 signed main () {
     speed_;
-    int n; int m;
-    cin >> n >>  m;
-    vector<int> prices;
-    for(int i=0; i< n; i++){
-        int temp; cin >> temp;
-        prices.push_back(temp);
-    }
-    sort(prices.begin(), prices.end());
-    
-    for(int i= 0; i< m; i++){
-        int temp; cin >> temp;
-        auto it = prices.upper_bound(temp);
-        if(it == prices.begin()){
-            cout << -1 << " ";
-        }
-        else{
-            cout << *it << " ";
-            prices.erase(it);
-        }
+    //#ifndef ONLINE_JUDGE
+    //freopen("input.txt","r",stdin);
+    ////freopen('output.txt','w',stdout);
+    //#endif
+
+    int n;
+    int z = 0;
+    int s = 6;
+    int mod = 1e9 + 7;
+    cin >> n;
+    vector<int> arr(n+1, 0);
+    int lim = min(n, s);
+    for(int i= 1; i<= lim; i++){
+        arr[i] = 1;
+        int hp = min(i, s);
+        for(int j= 1; j< hp; j++)arr[i] += arr[j];
     }
 
+    for(int i= 7; i<= n; i++){
+        for(int j= i-1; j >= i-6; j--)arr[i] += arr[j];
+        arr[i] %= mod;
+    }
+    cout << arr[n] << "\n";
 
     return 0;
 }

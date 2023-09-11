@@ -32,7 +32,5 @@ int main (int argc, char *argv[]) {
     }
 
     cout << "IMPOSSIBLE" << "\n";
-
-
     return 0;
 }

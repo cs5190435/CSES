@@ -16,35 +16,30 @@ using   ll=              long long;
 #define mp               make_pair
 
 
-const int M = 1000000007;
-const int MM = 998244353;
-const int N=1e6+5;
-const int inf=1e18;
-
 
 signed main () {
     speed_;
-    int n; int m;
-    cin >> n >>  m;
-    vector<int> prices;
-    for(int i=0; i< n; i++){
-        int temp; cin >> temp;
-        prices.push_back(temp);
-    }
-    sort(prices.begin(), prices.end());
-    
-    for(int i= 0; i< m; i++){
-        int temp; cin >> temp;
-        auto it = prices.upper_bound(temp);
-        if(it == prices.begin()){
-            cout << -1 << " ";
-        }
-        else{
-            cout << *it << " ";
-            prices.erase(it);
-        }
-    }
 
+    int n; int x ;
+    cin >> n >> x;
+    vi arr(n);
+    for(int i= 0; i< n; i++) {cin >> arr[i];}
+    sort(arr.begin(), arr.end());
+
+    vector<int> dp(x+1, 0);
+    dp[0]=1;
+    int mod = 1e9 + 7;
+    for(int i= 1; i<= x; i++){
+        for(auto j : arr){
+            if(j > i)break;
+            else{
+                dp[i] += dp[i-j];
+            }
+        }
+        dp[i] %= mod;
+        
+    }
+    cout << dp[x] << "\n";
 
     return 0;
 }
