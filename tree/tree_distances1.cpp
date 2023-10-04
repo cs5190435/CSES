@@ -1,78 +1,83 @@
 //Cpp coding template
 #include<iostream>
+#include<algorithm>
+#include<limits>
+#include<vector>
 #include<bits/stdc++.h>
+#define int long long
+#define pi pair<int, int>
+#define vi vector<int>
+#define pb push_back
 using namespace std;
 
+vector<int> f;
+vector<int> h;
+vector<int> g;
+vector<int> c;
 
-#define int              long long
-using   ll=              long long;
-#define ld               long double
-#define speed_           ios_base::sync_with_stdio(false),cin.tie(0), cout.tie(0)
-#define pi               pair<int, int>
-#define vi               vector<int>
-#define vp               vector<pair<int, int>>
-#define pb               push_back
-#define mp               make_pair
+void dfs(int i, vector<vector<int>>& adj, vector<bool>& vis){
+    vis[i] = true;
+    priority_queue<pi, vector<pi>, greater<pi> > pq;
 
-
-const int M = 1000000007;
-const int MM = 998244353;
-const int N=1e6+5;
-const int inf=1e18;
-
-vector<int> root;
-vector<int> down;
-vector<int> help;
-
-void dfs(int v, vector<vector<int>> adj){
-    if(vis[v])return;
-    vis[v] = true;
-    
-    for(int u : adj[v]){
-        root[u] = root[v]+1;
-        dfs(u, adj);
-    }
-
-    if(v != 0){
-        for(int u : adj[v]){
-            down[v] = max(down[v],1+down[u]);
+    for(auto j: adj[i]){
+        if(!vis[j]) {
+            dfs(j, adj, vis);
+            pq.push({f[j], j});
+            if(pq.size() > 2) pq.pop();
         }
     }
-    else{
-        for(int i= 0; i< adj[0].size(); i++){
-            help[i] = 1+down[adj[0][i]];
-        }
+
+    if(pq.size() == 1){ f[i] =1+ pq.top().first; c[i] = pq.top().second;}
+    else if(pq.size() == 2){
+        h[i] = 1+pq.top().first;
+        pq.pop();
+        f[i] = 1+ pq.top().first; c[i] = pq.top().second;
     }
+    return;
 }
 
-signed main () {
-    speed_;
 
-    int n; cin >> n;
-    vector<vector<int>> adj(n);
+void dfs2(int i, vector<vector<int>>& adj, vector<bool>& vis, int p){
+    vis[i] = true;
+    if(c[p] == i) g[i] = max(g[p]+1, h[p]+1);
+    else g[i] = max(g[p]+1, f[p]+1);
+
+    for(auto j: adj[i]){
+        if(!vis[j]) dfs2(j, adj, vis,i);
+    }
+    return;
+}
+
+
+signed main () {
+    int n;
+    cin >> n;
+    vector<vector<int>> adj(n+1);
+
     for(int i= 1; i< n; i++){
-        int a ; int b;
+        int a, b;
         cin >> a >> b;
         adj[a].push_back(b);
         adj[b].push_back(a);
-
     }
-    
-    root.resize(n);
-    down.resize(n);
-    help.resize(adj[0].size());
 
-    dfs(0, adj);
-    
-    if(adj[0].size() == 1)
-
-
-    vector<int> temp = help; sort(temp.begin(), temp.end(), greater<int>());
+    f.resize(n+1);
+    h.resize(n+1);
+    g.resize(n+1);
+    c.resize(n+1);
     
     
-    int m1 = 0; int m2 = 0;
+    vector<bool> vis(n+1, false);
 
+    dfs(1, adj, vis);
+    g[0] = -1;
+    h[0] = -1;
+    f[0] = -1;
 
+    for(int i= 0; i<= n; i++) vis[i] = false;
 
+    dfs2(1, adj,vis,0);
+
+    for(int i=1; i<= n; i++) cout << max(f[i], g[i]) << " ";
     return 0;
 }
